@@ -5,33 +5,40 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.bigo.diceapp.databinding.ActivityMainBinding
 import com.google.android.material.chip.ChipGroup
 
 class MainActivity : AppCompatActivity() {
+    private var isAnimating= false
+    private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-
-        val imagemdoDado: ImageView = findViewById(R.id.imagem)
-        val botao: Button = findViewById(R.id.botao)
+////        val imagemdoDado: ImageView = findViewById(R.id.imagem)
+//        val botao: Button = findViewById(R.id.botao)
         val chipGroup: ChipGroup = findViewById(R.id.chip_group)
 
+        binding.imagem.setImageResource(R.drawable.d4_1)
 
         chipGroup.setOnCheckedChangeListener { _, _ ->
             when (chipGroup.checkedChipId) {
-                R.id.d4 -> imagemdoDado.setImageResource(R.drawable.d4_1)
-                R.id.d6 -> imagemdoDado.setImageResource(R.drawable.d6_1)
-                R.id.d8 -> imagemdoDado.setImageResource(R.drawable.d8_1)
-                R.id.d10 -> imagemdoDado.setImageResource(R.drawable.d10_1)
-                R.id.d12 -> imagemdoDado.setImageResource(R.drawable.d12_1)
-                R.id.d20 -> imagemdoDado.setImageResource(R.drawable.d20_1)
+                R.id.d4 ->mudaImagem(R.drawable.d4_1, binding.imagem) /*imagemdoDado.setImageResource(R.drawable.d4_1)*/
+                R.id.d6 -> mudaImagem(R.drawable.d6_1, binding.imagem)
+                R.id.d8 -> mudaImagem(R.drawable.d8_1, binding.imagem)
+                R.id.d10 -> mudaImagem(R.drawable.d10_1, binding.imagem)
+                R.id.d12 -> mudaImagem(R.drawable.d12_1, binding.imagem)
+                R.id.d20 -> mudaImagem(R.drawable.d20_1, binding.imagem)
 
             }
 
         }
-        botao.setOnClickListener {
-            jogarDado(imagemdoDado, chipGroup)
+     binding.botao.setOnClickListener {
+            jogarDado( binding.imagem, chipGroup)
         }
     }
 
@@ -146,4 +153,24 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-}
+        private fun mudaImagem(iDResoursesImagem:Int, imagemdoDado: ImageView){
+            if(!isAnimating){
+                isAnimating = true
+                imagemdoDado.animate().apply {
+                    duration = 500
+//                    rotationYBy(360f)
+//                    alpha(0f)
+                    scaleX(0f)
+                    scaleY(0f)
+                }.withEndAction{
+                    imagemdoDado.animate().apply{
+//    alpha(1f)
+                        scaleX(1f)
+                        scaleY(1f)
+                    }
+                    imagemdoDado.setImageResource(iDResoursesImagem)
+                    isAnimating=false
+                }.start()
+            }
+        }
+    }
